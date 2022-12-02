@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atwzs.mybatis.mapper.SelectMapper">
+
+    <!--    com.atwzs.spring.User getUserById(@Param("id") Integer id);-->
+    <select id="getUserById" resultType="com.atwzs.spring.User">
+        select * from t_user where id = #{id}
+    </select>
+
+    <!--    List<com.atwzs.spring.User> getAllUser();-->
+    <select id="getAllUser" resultType="com.atwzs.spring.User">
+        select * from t_user
+    </select>
+
+    <!--    Integer getCount();-->
+    <!--
+    mybatis中为java中常用的类型设置了类型别名(官方文档中可以查到，)，同时别名意味着不区分大小写
+    Integer: Integer,int
+    int: _int,_integer
+    Map: map
+    String: string
+    -->
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from t_user
+    </select>
+
+    <!--    Map<String,Object> getUserByIdToMap(@Param("id") Integer id);-->
+    <select id="getUserByIdToMap" resultType="map">
+        select * from t_user where id = #{id}
+    </select>
+
+    <!--    Map<String,Object> getAllUserToMap();-->
+    <select id="getAllUserToMap" resultType="map">   <!--就算是List<map>返回的也是map-->
+        select * from t_user
+    </select>
+</mapper>

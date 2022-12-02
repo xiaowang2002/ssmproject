@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atwzs.mybatis.mapper.UserMapper">
+
+    <!--    int insertUser();-->
+    <insert id="insertUser">    <!--通过UserMapper的全类名找到映射文件，通过方法名找到id获取sql语句,-->
+        insert into t_user values(null,'admin','123456',20,'男','3517139394@qq.com')
+    </insert>
+
+    <!--    void updateUser();-->
+    <update id="updateUser">
+        update t_user set username='root',password='123' where id=3
+    </update>
+
+    <!--    void deleteUser();-->
+    <delete id="deleteUser">
+        delete from t_user where id=4
+    </delete>
+
+    <!--    com.atwzs.spring.User getUserById();-->
+    <!--
+    resultType:设置结果类型，即查询的数据要转换为的java类型
+    resultMap:自定义映射，处理多对一或一对多的映射关系
+    resultType和resultMap只能设置一个
+    -->
+    <select id="getUserById" resultType="com.atwzs.mybatis.pojo.com.atwzs.spring.User">
+        select * from t_user where id=3
+    </select>
+
+    <!--    List<com.atwzs.spring.User> getAllUser()-->
+    <select id="getAllUser" resultType="com.atwzs.spring.User">
+        select * from t_user
+    </select>
+</mapper>

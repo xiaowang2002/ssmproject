@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+<h1>index.html</h1>
+<a th:href="@{/hello}"/>测试SpringMVC</a>   <!--这里的/由浏览器解析，会自动加上上下文路径，解析成localhost:8080/SpringMVC/-->
+<a href="/hello" />测试绝对路径</a>  <!--这里的/由浏览器解析，解析成localhost:8080/,没有上下文路径-->
+</body>
+</html>

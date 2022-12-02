@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atwzs.mybatis.mapper.UserMapper">
+    <!--    com.atwzs.spring.User getUserByUsername(String username);-->
+    <select id="getUserByUsername" resultType="com.atwzs.spring.User">
+        <!--        select * from t_user where username = #{username}-->
+        select * from t_user where username = '${username}'
+    </select>
+
+    <!--    com.atwzs.spring.User checkLogin(String username,String password);-->
+    <select id="checkLogin" resultType="com.atwzs.spring.User">
+        <!--        select * from t_user where username = #{arg0} and password = #{arg1}-->
+        select * from t_user where username = '${param1}' and password = '${param2}'
+    </select>
+
+    <!--    com.atwzs.spring.User checkLoginByMap(Map<String,Object> map);-->
+    <select id="checkLoginByMap" resultType="com.atwzs.spring.User">
+        select * from t_user where username=#{username} and password=#{password}
+    </select>
+
+    <!--    void insertUser(com.atwzs.spring.User user);-->
+    <insert id="insertUser">
+        insert into t_user values(null,#{username},#{password},#{age},#{gender},#{email})
+    </insert>
+
+    <!--    com.atwzs.spring.User checkLoginByParam(@Param("username") String username,@Param("password") String password);-->
+    <select id="checkLoginByParam" resultType="com.atwzs.spring.User">
+        select * from t_user where username=#{username} and password=#{password}
+    </select>
+</mapper>

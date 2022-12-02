@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atwzs.mybatis.mapper.DetectMapper">
+
+    <!--    自定义映射-->
+    <resultMap id="DetectMap" type="Detect">
+        <id property="id" column="uid"/>
+        <result property="name" column="uname"/>
+        <result property="gender" column="usex"/>
+        <result property="kind" column="kind"/>
+    </resultMap>
+
+    <!--    Detect getDetectById(Integer id);-->
+    <select id="getDetectById" resultMap="DetectMap">   <!--resultType="Detect"-->
+        select * from t_detect where uid=#{id}
+        <!--        select uid id,uname name,usex gender,kind from t_detect where uid=#{id}   起别名-->
+    </select>
+
+
+    <!--    多对一-->
+    <!--    级联查询-->
+    <resultMap id="DetectMapTwo" type="Detect">
+        <id property="id" column="uid"/>
+        <result property="name" column="uname"/>
+        <result property="gender" column="usex"/>
+        <result property="kinds.kind" column="kind"/>
+        <result property="kinds.mean" column="mean"/>
+    </resultMap>
+
+    <!--    使用association查询-->
+    <resultMap id="DetectMapThree" type="Detect">
+        <id property="id" column="uid"/>
+        <result property="name" column="uname"/>
+        <result property="gender" column="usex"/>
+        <result property="kind" column="kind"/>
+        <association property="kinds">
+            <id property="kind" column="kind"/>
+            <result property="mean" column="mean"/>
+        </association>
+    </resultMap>
+    <!--    Detect getDetectAndKindById(@Param("id") Integer id);-->
+    <select id="getDetectAndKindById" resultMap="DetectMapThree">
+        select t_detect.*,t_kind.*
+        from t_detect left join t_kind
+        on t_detect.kind=t_kind.kind
+        where uid=#{id}
+    </select>
+
+
+    <!--    分步查询-->
+    <!--    Detect getDetectByIdStepOne(@Param("id") Integer id);-->
+    <resultMap id="DetectByIdStepOne" type="Detect">
+        <id property="id" column="uid"/>
+        <result property="name" column="uname"/>
+        <result property="gender" column="usex"/>
+        <result property="kind" column="kind"/>
+        <association property="kinds" select="com.atwzs.mybatis.mapper.DetectMapper.getDetectByIdStepTwo"
+                     column="kind" fetchType="lazy"/>
+    </resultMap>
+    <select id="getDetectByIdStepOne" resultMap="DetectByIdStepOne">
+        select * from t_detect where uid=#{id}
+    </select>
+
+    <resultMap id="DetectByIdStepTwo" type="Kind">
+        <id property="kind" column="kind"/>
+        <result property="mean" column="mean"/>
+    </resultMap>
+    <select id="getDetectByIdStepTwo" resultMap="DetectByIdStepTwo">
+        select * from t_kind where kind=#{kind}
+    </select>
+
+
+    <!--    一对多映射处理-->
+    <!--     collection查询-->
+    <!--    Kind getKindAndDetectByStepId(@Param("kind") String kind);-->
+    <resultMap id="KindAndDetectById" type="Kind">
+        <id property="kind" column="kind"/>
+        <result property="mean" column="mean"/>
+        <collection property="detects" ofType="Detect">
+            <id property="id" column="uid"/>
+            <result property="name" column="uname"/>
+            <result property="gender" column="usex"/>
+            <result property="kind" column="kind"/>
+        </collection>
+    </resultMap>
+    <select id="getKindAndDetectById" resultMap="KindAndDetectById">
+        select * from t_kind left join t_detect on t_kind.kind=t_detect.kind where t_kind.kind = #{kind}
+    </select>
+
+
+    <resultMap id="KindAndDetectByStep" type="Kind">
+        <id property="kind" column="kind"/>
+        <id property="mean" column="mean"/>
+        <collection property="detects" fetchType="lazy"
+                    select="com.atwzs.mybatis.mapper.DetectMapper.getKindAndDetectByStepTwo" column="kind"/>
+    </resultMap>
+    <!--    Kind getKindAndDetectByStepOne(@Param("mean") String mean);-->
+    <select id="getKindAndDetectByStepOne" resultMap="KindAndDetectByStep">
+        select * from t_kind where mean=#{mean}
+    </select>
+
+    <resultMap id="KindAndDetectByStepTwo" type="Detect">
+        <id property="id" column="uid"/>
+        <result property="name" column="uname"/>
+        <result property="gender" column="usex"/>
+        <result property="kind" column="kind"/>
+    </resultMap>
+    <!--    Detect getKindAndDetectByStepTwo(@Param("kind") String kind);-->
+    <select id="getKindAndDetectByStepTwo" resultMap="KindAndDetectByStepTwo">
+        select * from t_detect where kind=#{kind}
+    </select>
+
+
+    <!--    List<Detect> getDetectByIdAndName(@Param("id") Integer id,@Param("name") String name);-->
+    <select id="getDetectByIdAndName" resultMap="DetectMap">
+        <!--select *
+        from t_detect
+        where 1=1
+        <if test="id!='' and id!=null">
+            and uid=#{id}
+        </if>
+        <if test="name != '' and name != null">
+            and uname=#{name}
+        </if>-->
+
+        <!--select *
+        from t_detect
+        <where>
+            <if test="id!='' and id!=null">
+                and uid=#{id}
+            </if>
+            <if test="name != '' and name != null">
+                and uname=#{name}
+            </if>
+        </where>-->
+
+        <!--select *
+        from t_detect
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id!='' and id!=null">
+                and uid=#{id}
+            </if>
+            <if test="name != '' and name != null">
+                and uname=#{name}
+            </if>
+        </trim>-->
+
+        <!--select *
+        from t_detect
+        <trim prefix="where" suffixOverrides="and">
+            <if test="id!='' and id!=null">
+                uid=#{id} and
+            </if>
+            <if test="name != '' and name != null">
+                uname=#{name} and
+            </if>
+        </trim>-->
+
+        select
+        <include refid="base_detect"/>
+        from t_detect
+        <where>
+            <choose>
+                <when test="id!='' and id!=null">
+                    uid=#{id}
+                </when>
+                <when test="name != '' and name != null">
+                    uname=#{name}
+                </when>
+                <otherwise>
+                    uname=#{name}
+                </otherwise>
+            </choose>
+        </where>
+
+    </select>
+
+    <!--    void deleteDetectManyOne(Integer[] ids);-->
+    <!--<delete id="deleteDetectManyOne">
+        delete from t_detect
+        where uid in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>-->
+
+    <delete id="deleteDetectManyOne">
+        delete
+        from t_detect
+        where
+        <foreach collection="ids" item="id" separator="or">
+            uid=#{id}
+        </foreach>
+    </delete>
+
+    <sql id="base_detect">
+        uid,uname,usex,kind
+    </sql>
+</mapper>

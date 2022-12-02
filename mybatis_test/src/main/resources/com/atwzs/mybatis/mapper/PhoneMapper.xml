@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atwzs.mybatis.mapper.PhoneMapper">
+
+    <!--    Phone selectPhoneById(Integer id);-->
+    <select id="selectPhoneById" resultType="Phone">
+        select * from t_phone where phone_id=${id}
+    </select>
+
+    <!--    Phone selectPhoneByPhoneWeightAndPhonePrice(Float price,String weight);-->
+    <select id="selectPhoneByPhoneWeightAndPhonePrice" resultType="Phone">
+        select * from t_phone where phone_price=#{arg0} and phone_weight=#{arg1}
+    </select>
+
+    <!--    Phone selectPhoneByMap(Map<String,Object> map);-->
+    <select id="selectPhoneByMap" resultType="Phone">
+        select * from t_phone where phone_price=#{price} and phone_weight=#{weight}
+    </select>
+
+    <!--    void insertPhone(Phone phone);-->
+    <insert id="insertPhone">
+        insert into t_phone values(null,#{phoneName},#{phonePrice},#{CPU},#{phoneWeight});
+    </insert>
+
+    <!--    Phone selectPhoneByPrice(@Param("price")Float price,@Param("weight") String weight);-->
+    <select id="selectPhoneByPrice" resultType="Phone">
+        select * from t_phone where phone_Price=#{param1} and phone_weight=#{param2}
+    </select>
+
+    <!--    Float selectPhonePriceByPhoneName(@Param("phoneName") String phoneName);-->
+    <select id="selectPhonePriceByPhoneName" resultType="float">
+        select phone_price from t_phone where phone_name=#{phoneName}
+    </select>
+
+    <!--    List<Phone> selectAllPhone();-->
+    <select id="selectAllPhone" resultType="Phone">
+        select * from t_phone
+    </select>
+
+    <!--    Integer getPhoneCount();-->
+    <select id="getPhoneCount" resultType="integer">
+        select count(*) from t_phone
+    </select>
+
+    <!--    Map<String,Object> getPhoneMapById(@Param("id") Integer id);-->
+    <select id="getPhoneMapById" resultType="map">
+        select * from t_phone where phone_id=#{id}
+    </select>
+
+    <!--    List<Map<String,Object>> getAllPhoneMap();-->
+    <select id="getAllPhoneMap" resultType="map">
+        select * from t_phone
+    </select>
+
+    <!--    Map<String,Object> getAllPhoneToMap();-->
+    <select id="getAllPhoneToMap" resultType="map">
+        select * from t_phone
+    </select>
+
+    <!--    Map<String,Object> getPhoneByVaguePhoneName(@Param("phoneName") String phoneName);-->
+    <select id="getPhoneByVaguePhoneName" resultType="map">
+        <!--        select * from t_phone where phone_name like '%${phoneName}%'-->
+        <!--        select * from t_phone where phone_name like concat('%',#{phoneName},'%')-->
+        select * from t_phone where phone_name like "%"#{phoneName}"%"
+    </select>
+
+    <!--    void insertManyPhone(@Param("list") List<Phone> phoneList);-->
+    <insert id="insertManyPhone">
+        insert into t_phone
+        values
+        <foreach collection="list" item="phone" separator=",">
+            (null,#{phone.phoneName},#{phone.phonePrice},#{phone.CPU},#{phone.phoneWeight})
+        </foreach>
+    </insert>
+
+    <!--    void deleteManyPhone(@Param("ids") String ids);-->
+    <delete id="deleteManyPhone">
+        delete from t_phone where phone_id in (${ids})
+    </delete>
+
+    <!--    List<Phone> getAllByTableName(@Param("tableName") String tableName);-->
+    <select id="getAllByTableName" resultType="Phone">
+        select * from ${tableName}
+    </select>
+
+    <!--    void insertPhoneToGetKey(@Param("phone") Phone phone);-->
+    <insert id="insertPhoneToGetKey" useGeneratedKeys="true" keyProperty="phoneId">
+        insert into t_phone values(null,#{phone.phoneName},#{phone.phonePrice},#{phone.CPU},#{phone.phoneWeight})
+    </insert>
+</mapper>

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+<h1>success.html</h1>
+<p th:text="${testRequestScope}"></p>  <!--request域获取对象前面不用加request前缀-->
+<p th:text="${session.testSessionScope}"></p>
+<p th:text="${application.testApplicationScope}"></p>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--    指定初始化方法和销毁方法-->
+    <bean id="user" class="com.atwzs.spring.pojo.User" init-method="initMethod" destroy-method="destroyMethod">
+        <property name="username" value="王志生"/>
+    </bean>
+
+    <!-- 后置处理器配置 -->
+    <bean id="myBeanPostProcessor" class="com.atwzs.spring.process.MyBeanPostProcessor"/>
+</beans>

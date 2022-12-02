@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atwzs.mybatis.mapper.EmpMapper">
+
+    <!--
+    字段名和属性名不一致的情况，如何处理映射关系
+    1：为查询的字段设置别名，和属性名保持一致
+    2：当字段符合mysql的要求使用_，而属性符合java的要求使用驼峰， 例如：emp_id->empId,emp_name->empName
+    则可以在mybatis的核心配置文件中设置一个全局配置，可以自动将下划线映射为驼峰
+    3：使用自定义映射
+    -->
+    <!--    Emp getEmpByEmpId(@Param("id") Integer id);-->
+    <select id="getEmpByEmpIdOld" resultType="Emp">
+        <!--        此方法查询不到empId和empName的值，因为属性名和字段名不想等-->
+        <!--                select * from t_emp where emp_id = #{id}-->
+
+        <!--   起别名可以解决问题(用的空格)：select emp_id id,emp_name empName,age,gender from t_emp where emp_id =#{id}-->
+        <!--   起别名可以解决问题(用的as)：select emp_id as id,emp_name as empName,age,gender from t_emp where emp_id =#{id}-->
+        select * from t_emp where emp_id = #{empId}
+    </select>
+
+    <!--    第三种方法在此：-->
+    <!--    Emp getEmpByEmpId(@Param("id") Integer id);-->
+    <!--
+    resultMap:设置自定义映射关系
+    id:唯一标识
+    type:处理映射关系的实体类的类型
+    常用的标签：
+    id:处理主键和实体类中属性实现的映射关系
+    result:处理普通字段和实体类中属性中实现的映射关系
+    column:设置映射关系中的字段名，必须是sql查询出的某个字段
+    property:设置映射关系中的属性的属性名，必须是处理的实体类类型中的属性名
+    association:处理多对一的映射关系（处理实体类类型的属性）
+    -->
+    <resultMap id="empResultMap" type="Emp">
+        <id column="emp_id" property="empId"></id>
+        <result column="emp_name" property="empName"></result>
+    </resultMap>
+    <select id="getEmpByEmpId" resultMap="empResultMap">
+        select * from t_emp where emp_id = #{empId}
+    </select>
+
+    <!--    以下是多表查询-->
+    <!--    Emp getEmpAndDeptByEmpId(@Param("empId") Integer empId);-->
+    <select id="getEmpAndDeptByEmpIdOld" resultType="Emp">
+        select t_dept.*,t_emp.*
+        from t_emp left join t_dept
+        on t_emp.dept_id=t_dept.dept_id
+        where t_emp.emp_id=#{empId}
+    </select>
+
+    <!--
+        使用resultMap自定义映射处理
+        处理多对一的映射关系：
+        1.级联方式处理
+        2.association
+        3.分步查询（效率最高）
+        分布查询的优点：可以实现延迟加载，但是必须在核心配置文件中设置全局配置信息
+    -->
+    <!--    第一种方式在此-->
+    <!--    想要级联，实体类中也要有另一个表的属性-->
+    <resultMap id="empAndDeptResultMapOld2" type="Emp"> <!--type属性值为多对一的多的实体类类型-->
+        <id column="emp_id" property="empId"></id>
+        <result column="emp_name" property="empName"></result>
+        <result column="dept_id" property="dept.deptId"></result>   <!--级联后主键变成普通字段-->
+        <result column="dept_name" property="dept.deptName"></result>
+    </resultMap>
+    <!--    Emp getEmpAndDeptByEmpId(@Param("empId") Integer empId);-->
+    <select id="getEmpAndDeptByEmpIdOld2" resultMap="empAndDeptResultMapOld2">
+        select t_dept.*,t_emp.*
+        from t_emp left join t_dept
+        on t_emp.dept_id=t_dept.dept_id
+        where t_emp.emp_id=#{empId}
+    </select>
+
+    <!--    第二种方法在此-->
+    <!--
+        association:处理多对一的映射关系（处理实体类类型的属性）
+        collection:处理一多对的映射关系（处理集合类型的属性）
+        property:设置需要处理映射关系的属性的属性名
+        javaType:设置要处理的属性的类型
+    -->
+    <resultMap id="empAndDeptResultMapOld3" type="Emp"> <!--type属性值为多对一的多的实体类类型-->
+        <id column="emp_id" property="empId"></id>
+        <result column="emp_name" property="empName"></result>
+        <association property="dept" javaType="Dept"> <!--javaType属性值为多对一的多的实体类类型,property为属性名-->
+            <id column="dept_id" property="deptId"></id>
+            <result column="dept_name" property="deptName"></result>
+        </association>
+    </resultMap>
+    <!--    Emp getEmpAndDeptByEmpId(@Param("empId") Integer empId);-->
+    <select id="getEmpAndDeptByEmpIdOld3" resultMap="empAndDeptResultMapOld3">
+        select t_dept.*,t_emp.*
+        from t_emp left join t_dept
+        on t_emp.dept_id=t_dept.dept_id
+        where t_emp.emp_id=#{empId}
+    </select>
+
+    <!--    第三种方法在此-->
+    <!--    Emp getEmpAndDeptByStepOne(@Param("empId") Integer empId);-->
+    <resultMap id="empAndDeptByStepResultMap" type="Emp">
+        <id column="emp_id" property="empId"></id>
+        <result column="emp_name" property="empName"></result>
+        <!--
+        property:设置需要处理映射关系的属性的属性名
+        select:设置分步查询的sql的唯一标识,指定一个查询sql的唯一标识；mybatis会自动调用查询语句，并将查出的key封装起来
+        column:将查询出的某个字段作为分步查询的sql条件
+        fetchType:在开启了延迟加载的环境中，通过该属性设置当前的分布查询是否使用延迟加载
+              fetchType的属性值：eager(立即加载)|lazy(延迟加载)
+        -->
+        <association property="dept" fetchType="lazy"
+                     select="com.atwzs.mybatis.mapper.DeptMapper.getEmpAndDeptByStepTwo"
+                     column="dept_id">
+        </association>
+    </resultMap>
+    <select id="getEmpAndDeptByStepOne" resultMap="empAndDeptByStepResultMap">
+        select * from t_emp where emp_id=#{empId}
+    </select>
+
+    <!--    Dept getDeptAndEmpByStepTwo(@Param("deptId") Integer deptId);-->
+    <select id="getDeptAndEmpByStepTwo" resultType="Dept">
+        select * from t_dept where dept_id=#{deptId}
+    </select>
+</mapper>

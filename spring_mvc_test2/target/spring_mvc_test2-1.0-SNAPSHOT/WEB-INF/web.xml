@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <servlet>
+        <servlet-name>springMVC</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--
+               在web.xml中通过contextConfigLocation配置spring，contextConfigLocation参数定义了要装入的 Spring 配置文件。
+               部署applicationContext.xml文件,如果不写任何参数配置，默认的是在/WEB-INF/applicationContext.xml
+               如果指定了要加载的文件,则会去加载相应的xml,而不会去加载/WEB-INF/下的applicationContext.xml。如果没有指定的话，默认会去/WEB-INF/下加载applicationContext.xml。
+               如果想要自定义文件名，需要在web.xml中加入contextConfigLocation这个context参数
+               springmvc的默认配置文件是放在WEB-INF下的，并且要命名为*-servlet.xml，*为servlet—name，即下文中的"Springmvc"。
+               我们可以在web.xml中配置<init-param>来自定义文件名称和位置。
+        -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:springMVC.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springMVC</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!-- characterEncodingFilter字符编码过滤器 -->
+    <filter>
+        <filter-name>characterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <!--要使用的字符集，一般我们使用UTF-8(保险起见UTF-8最好)-->
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <!--是否强制设置request的编码为encoding，默认false，不建议更改-->
+            <param-name>forceRequestEncoding</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <!--是否强制设置response的编码为encoding，建议设置为true，下面有关于这个参数的解释-->
+            <param-name>forceResponseEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>characterEncodingFilter</filter-name>
+        <!--这里不能留空或者直接写 ' / ' ，否者不起作用-->
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>

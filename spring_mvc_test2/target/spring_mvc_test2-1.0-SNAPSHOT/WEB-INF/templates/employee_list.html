@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/static/css/index_work.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="app">
+    <table>
+        <tr>
+            <th colspan="5">Employee List</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>lastName</td>
+            <td>email</td>
+            <td>gender</td>
+            <td>
+                option
+                (<a th:href="@{'/to/add'}">add</a>)
+                <!--            注意：@{}里面的""或''可以加或者不加-->
+            </td>
+        </tr>
+        <tr th:each="employee:${employeeList}">
+            <td th:text="${employee.id}"></td>
+            <td th:text="${employee.lastName}"></td>
+            <td th:text="${employee.email}"></td>
+            <td th:text="${employee.gender}"></td>
+            <td>
+                <a @click="deleteEmployee()" th:href="@{'/employee/'+${employee.id}}">delete</a>
+                <a th:href="@{'/employee/'+${employee.id}}">update</a>
+            </td>
+        </tr>
+    </table>
+    <!--    借用form表单的delete一用-->
+    <form method="post">
+        <input type="hidden" name="_method" value="delete"/>
+    </form>
+</div>
+<script type="text/javascript" th:src="@{/static/js/vue.js}"></script>
+<script type="text/javascript">
+    new Vue({
+        el: "#app",
+        methods: {
+            deleteEmployee: function () {
+                var form = document.getElementsByTagName("form")[0];
+                form.action = event.target.href;
+                form.submit();
+                event.preventDefault();
+            }
+        }
+    });
+</script>
+</body>
+</html>

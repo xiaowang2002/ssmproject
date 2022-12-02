@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+<h1>首页</h1>
+<a th:href="@{/hello}">hello world</a>
+<form th:action="@{/test/testRequestMapping}" method="post">
+    <input type="submit" value="提交"/>
+</form>
+<a th:href="@{/param(username='admin',password='123456')}">测试requestMapping的params属性</a><br/>
+<a th:href="@{/aaa/test/ant}">测试requestMapping的ant</a>
+<a th:href="@{/test/1/admin}">测试requestMapping的路径占位符</a>
+<br>
+<hr>
+<form th:action="@{/param/servletAPI}" method="post">
+    用户名：<input type="text" name="username"><br/>
+    密码：<input type="password" name="password"><br/>
+    <input type="submit" value="提交">
+</form>
+<!--<a th:href="@{/test/requestParams(username='admin',password='123456')}">测试requestMapping的请求参数</a>-->
+<a th:href="@{/test/requestParams(username='admin',password='123456',username='wzs')}">测试requestMapping的请求参数</a>
+<a th:href="@{/test/requestParamsTwo(username='admin',password='123456')}">测试requestParam的请求参数</a><br/>
+
+<form th:action="@{/testpojo}" method="post">
+    用户名：<input type="text" name="username"><br>
+    密码：<input type="password" name="password"><br>
+    性别：<input type="radio" name="gender" value="男">男<input type="radio"name="sex" value="女">女<br>
+    年龄：<input type="text" name="age"><br>
+    邮箱：<input type="text" name="email"><br>
+    <input type="submit">
+</form>
+<br/>
+<hr/>
+
+<a th:href="@{/testRequestAttribute}">测试RequestAttribute用servletAPI</a>
+<a th:href="@{/testModelAndView}">测试RequestAttribute用ModelAndView</a>
+<a th:href="@{/testModel}">测试RequestAttribute用Model</a>
+<a th:href="@{/testSession}">测试SessionAttribute</a>
+<a th:href="@{/testApplication}">测试SessionApplication</a><br/><hr/>
+<a th:href="@{/testForward}">测试SpringMVC的视图InternalResourceView</a>
+<a th:href="@{/testRedirect}">测试SpringMVC的视图InternalResourceView</a>
+</body>
+</html>

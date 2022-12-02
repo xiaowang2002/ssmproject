@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atwzs.mybatis.mapper.SpecialSqlMapper">
+
+    <!--    List<com.atwzs.spring.User> getUserByLike(@Param("param") String param);-->
+    <select id="getUserByLike" resultType="com.atwzs.spring.User">
+        <!--        用#{}会报错，因为占位符的?会被解析成字符串，"%"?"%"-->
+        <!--        select * from t_user where username like "%#{param}%"-->
+
+        <!--        下面三种方法都可，建议用第三种-->
+        <!--        select * from t_user where username like "%${param}%"-->
+        <!--        select * from t_user where username like concat("%",#{param},"%")-->
+        select * from t_user where username like "%"#{param}"%"
+    </select>
+
+    <!--    void deleteMoreUser(@Param("ids") String ids);-->
+    <delete id="deleteMoreUser">
+        <!--        报错,#{}会自动加上'',变成('8,9')-->
+        <!--        delete from t_user where id in (#{ids})-->
+
+        <!--        不报错，会变成(8,9) , 若是string类型就去掉引号""-->
+        delete from t_user where id in (${ids})
+    </delete>
+
+    <!--    List<com.atwzs.spring.User> getUserList(@Param("tableName") String table);-->
+    <select id="getUsrList" resultType="com.atwzs.spring.User">
+        <!--        当我们设置表名的时候，不能用#{}因为他会自动加上''，而表名不需要加上'',所以用${}-->
+        select * from ${tableName}
+    </select>
+
+    <!--    void insertUser(com.atwzs.spring.User user);-->
+    <!--
+    *useGeneratedKeys:*表示当前添加功能使用自增的主键，
+    这会令 MyBatis 使用 JDBC 的ResultSet.getGeneratedKeys 方法来取出由数据库内部生成的主键(必要)
+    *keyProperty：*将添加的自增主键为实体类类型的哪一个属性赋值(必要)
+    -->
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        <!--        insert into t_user values(null,"yyq","123456","19","男","1235@qq.com");
+        在age那个地方，原本是int类型，就算插入的是string也没关系，所以可以用#{}-->
+        insert into t_user values(null,#{username},#{password},#{age},#{gender},#{email})
+    </insert>
+
+</mapper>

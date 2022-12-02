@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--
+	配置IocTest所对应的bean，即将IocTest的对象交给Spring的IOC容器管理
+	通过bean标签配置IOC容器所管理的bean
+	属性：
+		id：设置bean的唯一标识
+		class：设置bean所对应类型的全类名
+    -->
+    <bean id="testOne" class="com.atwzs.spring.pojo.IocTest"/>
+
+    <!--    set方法注入-->
+    <bean id="studentOne" class="com.atwzs.spring.pojo.Student">
+        <!-- property标签：通过组件类的setXxx()方法给组件对象设置属性 -->
+        <!-- name属性：指定属性名（这个属性名是getXxx()、setXxx()方法定义的，和成员变量无关）-->
+        <!-- value属性：指定属性值 -->
+        <property name="id" value="701"/>
+        <property name="name" value="&lt; 邓集彬 &gt;"/>
+        <property name="age" value="20"/>
+        <property name="gender">
+            <null/>
+        </property>
+    </bean>
+
+    <!--    要有构造器-->
+    <bean id="studentTwo" class="com.atwzs.spring.pojo.Student">
+        <constructor-arg name="id" value="702"/>
+        <constructor-arg index="1">
+            <value><![CDATA[<王志生>]]></value>
+        </constructor-arg>
+        <constructor-arg value="20"/>
+        <constructor-arg index="3">
+            <null/>
+        </constructor-arg>
+    </bean>
+
+    <!--    第一种方式-->
+    <!--<bean id="studentFour" class="com.atwzs.spring.pojo.Student">
+        <property name="id" value="702"/>
+        <property name="name" value="杨幂"/>
+        <property name="age" value="30"/>
+        <property name="gender" value="女"/>
+        <property name="clazz" ref="clazzOne"/>
+    </bean>
+    -->
+    <bean id="clazzOne" class="com.atwzs.spring.pojo.Clazz">
+        <property name="clazzId" value="1"/>
+        <property name="clazzName" value="牛气冲天班"/>
+    </bean>
+
+    <!--    第二种方式-->
+    <bean id="studentFour" class="com.atwzs.spring.pojo.Student">
+        <property name="id" value="702"/>
+        <property name="name" value="杨幂"/>
+        <property name="age" value="30"/>
+        <property name="gender" value="女"/>
+        <property name="clazz">
+            <bean class="com.atwzs.spring.pojo.Clazz">
+                <property name="clazzId" value="1"/>
+                <property name="clazzName" value="虎虎生威班"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!--    第三种方式-->
+    <bean id="studentFive" class="com.atwzs.spring.pojo.Student">
+        <property name="id" value="702"/>
+        <property name="name" value="杨幂"/>
+        <property name="age" value="30"/>
+        <property name="gender" value="女"/>
+        <property name="clazz" ref="clazzOne"/>
+        <property name="clazz.clazzId" value="40"/>
+        <property name="clazz.clazzName" value="世界第一班"/>
+    </bean>
+
+    <bean id="studentSix" class="com.atwzs.spring.pojo.Student">
+        <property name="id" value="702"/>
+        <property name="name" value="杨幂"/>
+        <property name="age" value="30"/>
+        <property name="gender" value="女"/>
+        <property name="clazz" ref="clazzOne"/>
+        <property name="clazz.clazzId" value="40"/>
+        <property name="clazz.clazzName" value="世界第一班"/>
+        <property name="hobbies">
+            <array>
+                <value>黄</value>
+                <value>赌</value>
+                <value>毒</value>
+            </array>
+        </property>
+    </bean>
+
+    <bean id="clazzTwo" class="com.atwzs.spring.pojo.Clazz">
+        <property name="clazzId" value="1"/>
+        <property name="clazzName" value="牛气冲天班"/>
+        <property name="students" ref="students">
+            <!--<list>
+                <ref bean="studentFive"/>
+                <ref bean="studentOne"/>
+                <ref bean="studentTwo"/>
+                <ref bean="studentFour"/>
+                <ref bean="studentSix"/>
+            </list>-->
+        </property>
+    </bean>
+
+    <bean id="teacherOne" class="com.atwzs.spring.pojo.Teacher">
+        <property name="teacherId" value="10010"/>
+        <property name="teacherName" value="大宝"/>
+    </bean>
+    <bean id="teacherTwo" class="com.atwzs.spring.pojo.Teacher">
+        <property name="teacherId" value="10086"/>
+        <property name="teacherName" value="二宝"/>
+    </bean>
+    <bean id="studentTen" class="com.atwzs.spring.pojo.Student">
+        <property name="id" value="702"/>
+        <property name="name" value="杨幂"/>
+        <property name="age" value="30"/>
+        <property name="gender" value="女"/>
+        <property name="clazz" ref="clazzOne"/>
+        <property name="clazz.clazzId" value="40"/>
+        <property name="clazz.clazzName" value="世界第一班"/>
+        <property name="hobbies">
+            <array>
+                <value>黄</value>
+                <value>赌</value>
+                <value>毒</value>
+            </array>
+        </property>
+        <property name="teacherMap" ref="teacherMap">
+            <!--<map>
+                <entry key="111" value-ref="teacherOne"/>
+                <entry key="112" value-ref="teacherTwo"/>
+            </map>-->
+        </property>
+    </bean>
+
+    <!--    用util可以在外面声明一个list,然后用的时候用ref调用就行-->
+    <util:list id="students">
+        <ref bean="studentOne"/>
+        <ref bean="studentTwo"/>
+        <ref bean="studentFour"/>
+    </util:list>
+
+    <util:map id="teacherMap">
+        <entry key="111" value-ref="teacherOne"/>
+        <entry key="112" value-ref="teacherTwo"/>
+    </util:map>
+
+    <bean id="studentEleven" class="com.atwzs.spring.pojo.Student"
+          p:id="10086" p:age="20" p:name="开胃" p:gender="男" p:clazz-ref="clazzTwo"
+          p:teacherMap-ref="teacherMap" scope="prototype"/>
+
+    <!--    引入外部文件-->
+    <context:property-placeholder location="jdbc.properties"/>
+
+    <bean id="druidDataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+</beans>

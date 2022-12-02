@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--<bean id="userController" class="com.atwzs.spring.controller.UserController" autowire="byType"/>
+
+    <bean id="userService" class="com.atwzs.spring.service.impl.UserServiceImpl" autowire="byType"/>
+
+    <bean id="userDao" class="com.atwzs.spring.dao.impl.UserDAOImpl"/>-->
+
+
+    <!--无限套娃-->
+    <!--<bean id="userController" class="com.atwzs.spring.controller.UserController">
+        <property name="userService" ref="userService"/>
+    </bean>
+
+    <bean id="userService" class="com.atwzs.spring.service.impl.UserServiceImpl">
+        <property name="userDAO" ref="userDao"/>
+    </bean>
+
+    <bean id="userDao" class="com.atwzs.spring.dao.impl.UserDAOImpl"/>-->
+
+
+    <!--<bean id="userController" class="com.atwzs.spring.controller.UserController" autowire="byName"/>
+
+    <bean id="userService" class="com.atwzs.spring.service.impl.UserServiceImpl" autowire="byName"/>
+    <bean id="userServiceImpl" class="com.atwzs.spring.service.impl.UserServiceImpl" autowire="byName"/>
+
+    <bean id="userDAO" class="com.atwzs.spring.dao.impl.UserDAOImpl"/>
+    <bean id="userDaoImpl" class="com.atwzs.spring.dao.impl.UserDAOImpl"/>-->
+
+    <context:component-scan base-package="com.atwzs.spring" use-default-filters="true">
+<!--        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>-->
+<!--        <context:exclude-filter type="assignable" expression="com.atwzs.spring.dao.impl.UserDAOImpl"/>-->
+        <context:include-filter type="assignable" expression="com.atwzs.spring.controller.UserController"/>
+    </context:component-scan>
+</beans>
